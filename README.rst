@@ -98,27 +98,28 @@ For environments with non-root privileges, you can run the analysis using singul
 Inside the container, the latest version of IAM_SARSCOV2 repository will be located at /app/, and output files will be written at /data/.
 The singularity '--bind' flag is used to mount an arbitrary directory at /data/.
 
-:warning: The container **assumes all input files needed are present at /data/**, be sure this is the case.:warning:
+:warning: The container **assumes all input files needed are present at /data/**, be sure this is the case.
 Given this structure, all input file paths should be provided relative to the /data/.
 
-### How to build the container?
+* How to build the container?
 
-```{bash}
->$ singularity build --fakeroot --sandbox <imagename> Singularityfile
-```
+.. code:: bash
+    singularity build --fakeroot --sandbox <imagename> Singularityfile
+
 This method will create the container as a sandbox, which is just a regular directory containing all container dirs and files.
 
-### How to run the container
+* How to run the container
 
-```{bash}
->$ bash sars2_assembly_singularity_run.sh <INPUT_DIR> <REFERENCEGENOME> <001.fastq.gz> <002.fastq.gz> <PREFIX> <NUM_THREADS> <DEPTH> <MIN_LEN> <ADAPTERS_FILE> <imagename>
-```
+
+.. code:: bash
+    bash sars2_assembly_singularity_run.sh <INPUT_DIR> <REFERENCEGENOME> <001.fastq.gz> <002.fastq.gz> <PREFIX> <NUM_THREADS> <DEPTH> <MIN_LEN> <ADAPTERS_FILE> <imagename>
 
 A real command should look like bellow:
 
-```{bash}
->$ bash sars2_assembly_singularity_run.sh /my/input/dir/ reference.fasta code_R1.fastq.gz code_R2.fastq.gz prefix_name 8 5 75 adapters.fa iam_sarscov2:0.0.4
-```
+.. code:: bash
+
+  bash sars2_assembly_singularity_run.sh /my/input/dir/ reference.fasta code_R1.fastq.gz code_R2.fastq.gz prefix_name 8 5 75 adapters.fa iam_sarscov2:0.0.4
+
 
 =====
 Explained Usage

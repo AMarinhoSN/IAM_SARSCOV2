@@ -20,7 +20,7 @@ Dependencies
     * pandas 1.0.1
     * numpy 1.20.3
     * biopython 1.74
-* mafft v7.310 (2017/Mar/17)    
+* mafft v7.310 (2017/Mar/17)
 * nextclade 0.14.2
 * pangolin v3.1.4
 * bedtools v2.27.0
@@ -35,13 +35,13 @@ Files info
     IAM_SARSCOV2/
     ├-Dockerfile                            ### Recipe to build local docker image
     ├-sars2_assembly_docker                 ### Script called into ENTRYPOINT of local docker image
-    ├-sars2_assembly_docker_run.sh          ### Script for users unfamiliar with docker run sintaxe 
+    ├-sars2_assembly_docker_run.sh          ### Script for users unfamiliar with docker run sintaxe
     ├-Singularityfile                       ### Recipe to build local singularity sandbox
     ├-sars2_assembly_singularity            ### Script called into ENTRYPOINT of local singularity sandbox
-    ├-sars2_assembly_singularity_run.sh     ### Script for users unfamiliar with singularity run sintaxe 
+    ├-sars2_assembly_singularity_run.sh     ### Script for users unfamiliar with singularity run sintaxe
     ├-pango_update                          ### Script to activate conda and update pangolin, run automatically during docker or singularity build
-    └-python_scripts:                       
-      ├-assembly_metrics.py                 ### Run bamdst 
+    └-python_scripts:
+      ├-assembly_metrics.py                 ### Run bamdst
       ├-bwa_index.py                        ### Run bwa index
       ├-bwa_mem.py                          ### Run bwa mem
       ├-fastp.py                            ### Run fastp
@@ -60,7 +60,7 @@ The last update of the pangolin in the docker images was carried out on June 22,
 You can create a container and run as an interactive session the sars2_assembly following:
 
 .. code:: bash
-    
+
     docker run -tdi --name iam_sarscov2 --cpus <number> --memory <number> dezordi/iam_sarscov2:0.0.4 /bin/bash
     docker cp  <REFERENCEGENOME> <001.fastq.gz> <002.fastq.gz> <ADAPTERS_FILE> iam_sarscov2:home
     docker attach iam_sarscov2
@@ -77,7 +77,7 @@ You can create a container and run as an interactive session the sars2_assembly 
 Or you can use the Dockerfile and sars2_assembly_docker_run.sh to run the docker without the interactive mode:
 
 .. code:: bash
-    
+
     docker build -t <image>:<tag> .
     bash sars2_assembly_docker_run.sh <REFERENCEGENOME> <001.fastq.gz> <002.fastq.gz> <PREFIX> <NUM_THREADS> <DEPTH> <MIN_LEN> <ADAPTERS_FILE> <image>:<tag>
 
@@ -86,37 +86,39 @@ Using the Dockerfile and sars2_assembly_docker_run.sh a directory named 'prefix.
 **Suggestion to paired-end reads with 150 of length using Dockerfile:**
 
 .. code:: bash
-    
+
     docker build -t iam_sarscov2:0.0.4 .
     bash sars2_assembly_docker_run.sh reference.fasta code_R1.fastq.gz code_R2.fastq.gz prefix_name 8 5 75 adapters.fa iam_sarscov2:0.0.4
 
 =====
 Singularity
 =====
-
 For environments with non-root privileges, you can run the analysis using singularity. A recipe file was create using the same docker image.
-The recipe file and following steps were tested for singularity version 3.7.1.
 
-.. code:: bash
-    
-    singularity build --fakeroot <imagename> Singularityfile
-    bash sars2_assembly_singularity_run.sh <REFERENCEGENOME> <001.fastq.gz> <002.fastq.gz> <PREFIX> <NUM_THREADS> <DEPTH> <MIN_LEN> <ADAPTERS_FILE> <imagename>
+Inside the container, the latest version of IAM_SARSCOV2 repository will be located at /app/, and output files will be written at /data/.
+The singularity '--bind' flag is used to mount an arbitrary directory at /data/.
 
-**Suggestion to paired-end reads with 150 of length using Singularity:**
+:warning: The container **assumes all input files needed are present at /data/**, be sure this is the case.:warning:
+Given this structure, all input file paths should be provided relative to the /data/.
 
-.. code:: bash
-    
-    singularity build --fakeroot iam_sarscov2.0.0.4 Singularityfile
-    bash sars2_assembly_singularity_run.sh reference.fasta code_R1.fastq.gz code_R2.fastq.gz prefix_name 8 5 75 adapters.fa iam_sarscov2:0.0.4
+### How to build the container?
 
-For Singularity > 3.7.1 versions, follow:
+```{bash}
+>$ singularity build --fakeroot --sandbox <imagename> Singularityfile
+```
+This method will create the container as a sandbox, which is just a regular directory containing all container dirs and files.
 
-.. code:: bash
-    
-    singularity build --fakeroot --sandbox <imagename> Singularityfile 
-    bash sars2_assembly_singularity_run.sh <REFERENCEGENOME> <001.fastq.gz> <002.fastq.gz> <PREFIX> <NUM_THREADS> <DEPTH> <MIN_LEN> <ADAPTERS_FILE> <imagename>
+### How to run the container
 
-This method will create a sandbox, and all files to analysis should be in the same directory of the sandbox.
+```{bash}
+>$ bash sars2_assembly_singularity_run.sh <INPUT_DIR> <REFERENCEGENOME> <001.fastq.gz> <002.fastq.gz> <PREFIX> <NUM_THREADS> <DEPTH> <MIN_LEN> <ADAPTERS_FILE> <imagename>
+```
+
+A real command should look like bellow:
+
+```{bash}
+>$ bash sars2_assembly_singularity_run.sh /my/input/dir/ reference.fasta code_R1.fastq.gz code_R2.fastq.gz prefix_name 8 5 75 adapters.fa iam_sarscov2:0.0.4
+```
 
 =====
 Explained Usage
@@ -144,7 +146,7 @@ Explained Usage
 **Suggestion to paired-end reads with 150 of length:**
 
 .. code:: bash
-    
+
     bash sars2_assembly reference.fasta code_R1.fastq.gz code_R2.fastq.gz prefix_name 8 5 75 adapters.fa
 
 **Suggestion to paired-end reads with 75 of length:**

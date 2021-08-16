@@ -14,7 +14,13 @@ Stage: spython-base
 
 
 %post
-	/bin/bash -c "source /home/pango_update" 
+	/bin/bash -c "source /home/pango_update"
+  # set app
+  mkdir /app
+  cd /app/
+  git clone https://github.com/dezordi/IAM_SARSCOV2.git
+  # set output dir
+  mkdir /data/
 
 %runscript
-	/bin/bash -c "source $(pwd)/sars2_assembly_singularity $(pwd)/$REFERENCE $(pwd)/$FASTQ1 $(pwd)/$FASTQ2 $PREFIXOUT $THREADS $DEPTH $MIN_LEN $(pwd)/$ADAPTERS"
+  /bin/bash -c "source /app/IAM_SARSCOV2/sars2_assembly_singularity $REFERENCE $FASTQ1 $FASTQ2 $PREFIXOUT $THREADS $DEPTH $MIN_LEN $ADAPTERS"

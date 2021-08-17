@@ -85,6 +85,10 @@ ADAPTERS=$8 #fasta file with adapters
 #================================================================
 # WORKFLOW
 #================================================================
+# CHECK DATA DIR CONTAINER
+echo ":: THE CONTAINER HAVE ACCESS TO THE FOLLOWING FILES ::"
+ls /data/
+echo ":: ------------------------------------------------ ::"
 
 #CREATING INDEX OF REFERENCE GENOME
 python /app/IAM_SARSCOV2/python_scripts/bwa_index.py -in /data/$FASTA
@@ -97,8 +101,7 @@ start=$(date +%s%3N)
 echo ''
 echo '!! STEP 1 !!'
 echo ''
-
-python /app/IAM_SARSCOV2/python_scripts/fastp.py -f1 $FASTQ1 -f2 $FASTQ2 -pr $PREFIXOUT -mi $MIN_LEN -p $THREADS -a $ADAPTERS
+python /app/IAM_SARSCOV2/python_scripts/fastp.py -f1 /data/$FASTQ1 -f2 /data/$FASTQ2 -pr $PREFIXOUT -mi $MIN_LEN -p $THREADS -a /data/$ADAPTERS
 echo '!! DONE !!'
 
 end=$(date +%s%3N)
